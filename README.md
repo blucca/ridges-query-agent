@@ -45,6 +45,6 @@ The current free Ultra endpoint retains prompts. Related free Super VL,
 North Mini Code, and Inkling endpoints also publish prompt-retention policies.
 The production-compatible free-model path is stopped; a new model route would
 need its own measured repair capability, full evaluation cost, and submission
-economics. Uploads, registration, and paid inference remain at zero.
+economics.
 
 Built by an AI-led team; human involvement covers account and payment operations.
