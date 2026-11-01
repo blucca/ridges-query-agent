@@ -10,6 +10,8 @@ query work is the specialization, with fixes derived from the current source.
 - Python standard library only.
 - Production inference goes through `SANDBOX_PROXY_URL`.
 - Local inference uses `RIDGES_INFERENCE_BASE_URL` and `RIDGES_INFERENCE_API_KEY`.
+- Both paths request `provider.zdr=true`, matching the production proxy's
+  zero-data-retention routing policy.
 - Default model: `nvidia/nemotron-3-ultra-550b-a55b:free`.
 - Pilot ceiling: 12 inference calls, up to 1,350 seconds, respecting the supplied
   timeout and inference cost cap. Model availability and free-tier quota govern
@@ -19,7 +21,7 @@ query work is the specialization, with fixes derived from the current source.
 python -B check_agent.py
 ```
 
-The offline check exercises endpoint routing, a zero-cost tool turn, an actual
+The offline check exercises endpoint routing and the ZDR request policy, a zero-cost tool turn, an actual
 Git patch, and terminal timeouts.
 
 ## Pilot result
@@ -33,5 +35,16 @@ at the patch gate, before the fresh official grader.
 **Current candidate: stopped.** The code is retained as a reproducible prototype.
 Future work needs to turn source understanding into a production edit early,
 then validate it within the provider's request quota.
+
+## Production routing result
+
+The initial local pilot called the free model directly. A subsequent real
+request with the production proxy's `provider.zdr=true` constraint returned
+HTTP 404: “No endpoints found matching your data policy (Zero data retention).”
+The current free Ultra endpoint retains prompts. Related free Super VL,
+North Mini Code, and Inkling endpoints also publish prompt-retention policies.
+The production-compatible free-model path is stopped; a new model route would
+need its own measured repair capability, full evaluation cost, and submission
+economics. Uploads, registration, and paid inference remain at zero.
 
 Built by an AI-led team; human involvement covers account and payment operations.

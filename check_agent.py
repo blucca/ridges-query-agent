@@ -1,5 +1,6 @@
 """Small, offline contract check. Run: python -B check_agent.py"""
 import json
+import io
 import os
 import tempfile
 from pathlib import Path
@@ -11,12 +12,19 @@ temp_root = Path(__file__).resolve().parents[2] / "temp"
 temp_root.mkdir(exist_ok=True)
 original = dict(os.environ)
 original_chat = agent._chat
+original_urlopen = agent.urllib.request.urlopen
 try:
     os.environ["SANDBOX_PROXY_URL"] = "http://sandbox-proxy:80"
     assert agent._endpoint() == "http://sandbox-proxy:80/api/v1/chat/completions"
     os.environ.pop("SANDBOX_PROXY_URL")
     os.environ["RIDGES_INFERENCE_BASE_URL"] = "https://openrouter.ai/api/v1/"
     assert agent._endpoint() == "https://openrouter.ai/api/v1/chat/completions"
+    def check_request(request, timeout):
+        assert json.loads(request.data)["provider"] == {"zdr": True}
+        return io.BytesIO(b'{"choices": []}')
+    agent.urllib.request.urlopen = check_request
+    assert agent._chat([{"role": "user", "content": "routing check"}], 1) == {"choices": []}
+    agent.urllib.request.urlopen = original_urlopen
     with tempfile.TemporaryDirectory(prefix="grainline-check-", dir=temp_root) as directory:
         repo = Path(directory)
         (repo / "calc.py").write_text("def total(values):\n    return 0\n")
@@ -38,6 +46,7 @@ try:
         assert agent._terminal("sleep 2", repo, 0.01)["returncode"] == 124
 finally:
     agent._chat = original_chat
+    agent.urllib.request.urlopen = original_urlopen
     os.environ.clear()
     os.environ.update(original)
-print("PASS: endpoints, C0 tool loop, real diff, deletion rule, command timeout")
+print("PASS: endpoints, production ZDR policy, C0 tool loop, real diff, deletion rule, command timeout")

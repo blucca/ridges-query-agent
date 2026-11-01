@@ -6,6 +6,7 @@ import re
 import subprocess
 import sys
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -54,6 +55,7 @@ def _chat(messages, timeout):
     key = os.getenv("OPENROUTER_API_KEY") or os.getenv("RIDGES_INFERENCE_API_KEY", "")
     payload = {
         "model": MODEL, "messages": messages, "tools": TOOLS,
+        "provider": {"zdr": True},
         "max_tokens": 6144, "temperature": 0,
         "reasoning": {"effort": "medium", "exclude": True},
     }
@@ -127,7 +129,9 @@ def agent_main(input: dict) -> str:
                  usage=usage, cost_total=spent)
             message = response["choices"][0]["message"]
         except Exception as error:
-            _log("inference_stopped", error_type=type(error).__name__)
+            _log("inference_stopped", error_type=type(error).__name__,
+                 detail=(error.read().decode(errors="replace")[:2000]
+                         if isinstance(error, urllib.error.HTTPError) else str(error)[:700]))
             break
         assistant = {"role": "assistant", "content": message.get("content")}
         tool_calls = message.get("tool_calls", [])
