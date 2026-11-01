@@ -7,6 +7,9 @@ At GORM commit `ead4e04ba7c6a49654649131e587133b1d9f3eca`,
 `Distinct("a", "b").Count(&count)` emits `count(*)`. The physical row count
 then replaces the intended count of distinct projected tuples.
 
+[Read the walkthrough](walkthrough.md): the counting unit, NULL-bearing tuples,
+and the native four-case check.
+
 ## Measured baseline
 
 Native Go + GORM + PostgreSQL 16.15, with fictional records:
