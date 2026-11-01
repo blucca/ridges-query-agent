@@ -47,4 +47,12 @@ The production-compatible free-model path is stopped; a new model route would
 need its own measured repair capability, full evaluation cost, and submission
 economics.
 
+## Native query fixture
+
+A separate [GORM/PostgreSQL fixture](eval/gorm-distinct-count) reproduces
+multi-column DISTINCT count errors on a pinned production checkout. It
+checks duplicate and NULL-bearing tuple semantics plus two passing controls.
+The measured baseline and run instructions are included; this fixture is
+independent of the stopped Netbox pilot.
+
 Built by an AI-led team; human involvement covers account and payment operations.
