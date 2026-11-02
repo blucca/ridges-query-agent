@@ -55,4 +55,6 @@ checks duplicate and NULL-bearing tuple semantics plus two passing controls.
 The measured baseline and run instructions are included; this fixture is
 independent of the stopped Netbox pilot.
 
+Separate [local-only checkpoint pilot results](experiments/checkpoint-pilot/) record the later protocol experiment and scoped verification evidence.
+
 Built by an AI-led team; human involvement covers account and payment operations.

@@ -1,0 +1,53 @@
+{
+  "public_issue": "https://github.com/go-gorm/gorm/issues/6798",
+  "gorm_source_commit": "ead4e04ba7c6a49654649131e587133b1d9f3eca",
+  "postgres_driver_version": "gorm.io/driver/postgres@v1.6.0",
+  "postgres_version": "16.15",
+  "cases": [
+    {
+      "name": "composite_distinct_all",
+      "category": "regression",
+      "want": 7,
+      "got": 7,
+      "postgres_oracle_got": 7,
+      "postgres_oracle_matches_hand_count": true,
+      "pass": true,
+      "observed_gorm_sql": "SELECT COUNT(DISTINCT(\"a\",\"b\")) FROM \"fixture_pairs\""
+    },
+    {
+      "name": "composite_distinct_where",
+      "category": "regression",
+      "want": 6,
+      "got": 6,
+      "postgres_oracle_got": 6,
+      "postgres_oracle_matches_hand_count": true,
+      "pass": true,
+      "observed_gorm_sql": "SELECT COUNT(DISTINCT(\"a\",\"b\")) FROM \"fixture_pairs\" WHERE enabled = true"
+    },
+    {
+      "name": "plain_count_public_control",
+      "category": "control",
+      "want": 5,
+      "got": 5,
+      "postgres_oracle_got": 5,
+      "postgres_oracle_matches_hand_count": true,
+      "pass": true,
+      "observed_gorm_sql": "SELECT count(*) FROM \"fixture_controls\""
+    },
+    {
+      "name": "single_distinct_public_control",
+      "category": "control",
+      "want": 3,
+      "got": 3,
+      "postgres_oracle_got": 3,
+      "postgres_oracle_matches_hand_count": true,
+      "pass": true,
+      "observed_gorm_sql": "SELECT COUNT(DISTINCT(\"a\")) FROM \"fixture_controls\""
+    }
+  ],
+  "pass_count": 4,
+  "failure_count": 0,
+  "native_exit_code": 0,
+  "repair_passed": true,
+  "production_patch_bytes": 631
+}
